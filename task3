@@ -1,0 +1,219 @@
+mysql> select *from doctors;
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization   | contact_number | email                    | department_id |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+|       100 | Dr. Meera Joshi  | General Medicine | 9000012345     | meera.joshi@example.com  |             1 |
+|       101 | Dr. Rohit Sharma | Cardiology       | 9000023456     | rohit.sharma@example.com |             1 |
+|       102 | Dr. Anjali Desai | Neurology        | 9000034567     | anjali.desai@example.com |             2 |
+|       103 | Dr. Vikram Singh | Orthopedics      | 9000045678     | vikram.singh@example.com |             3 |
+|       104 | Dr. Kavita Nair  | Pediatrics       | 9000056789     | kavita.nair@example.com  |             1 |
+|       105 | Dr. Arjun Verma  | Radiology        | 9000067890     | arjun.verma@example.com  |             2 |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT name, specialization FROM doctors;
++------------------+------------------+
+| name             | specialization   |
++------------------+------------------+
+| Dr. Meera Joshi  | General Medicine |
+| Dr. Rohit Sharma | Cardiology       |
+| Dr. Anjali Desai | Neurology        |
+| Dr. Vikram Singh | Orthopedics      |
+| Dr. Kavita Nair  | Pediatrics       |
+| Dr. Arjun Verma  | Radiology        |
++------------------+------------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT name, contact_number FROM patients WHERE blood_group = 'O+';
++-------------+----------------+
+| name        | contact_number |
++-------------+----------------+
+| Ravi Shinde | 9881653452     |
++-------------+----------------+
+1 row in set (0.02 sec)
+
+mysql> SELECT name, email FROM doctors WHERE department_id = 2;
++------------------+--------------------------+
+| name             | email                    |
++------------------+--------------------------+
+| Dr. Anjali Desai | anjali.desai@example.com |
+| Dr. Arjun Verma  | arjun.verma@example.com  |
++------------------+--------------------------+
+2 rows in set (0.01 sec)
+
+mysql> SELECT * FROM doctors WHERE department_id = 1;
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization   | contact_number | email                    | department_id |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+|       100 | Dr. Meera Joshi  | General Medicine | 9000012345     | meera.joshi@example.com  |             1 |
+|       101 | Dr. Rohit Sharma | Cardiology       | 9000023456     | rohit.sharma@example.com |             1 |
+|       104 | Dr. Kavita Nair  | Pediatrics       | 9000056789     | kavita.nair@example.com  |             1 |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM patients WHERE gender = 'Female';
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+| patient_id | name          | dob        | gender | contact_number | address                         | blood_group | email                     |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+|         21 | Ravi Shinde   | 2005-10-05 | Female | 9881653452     | Rajarampuri, 5th lane, Kolhapur | O+          | radha@gmail.com           |
+|         24 | Sneha Patil   | 2003-03-15 | Female | 9876543210     | Shivaji Park, Kolhapur          | A+          | sneha.patil@example.com   |
+|         26 | Priya Jadhav  | 2001-12-09 | Female | 9898989898     | Mahalaxmi Nagar, Kolhapur       | AB+         | priya.jadhav@example.com  |
+|         28 | Neha Kulkarni | 2002-09-17 | Female | 9966332211     | Kasaba Bawda, Kolhapur          | A-          | neha.kulkarni@example.com |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM doctors WHERE specialization = 'Cardiology' AND department_id = 1;
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization | contact_number | email                    | department_id |
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+|       101 | Dr. Rohit Sharma | Cardiology     | 9000023456     | rohit.sharma@example.com |             1 |
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM patients WHERE blood_group = 'A+' AND gender = 'Male';
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM patients WHERE blood_group = 'A+' AND gender = 'female';
++------------+-------------+------------+--------+----------------+------------------------+-------------+-------------------------+
+| patient_id | name        | dob        | gender | contact_number | address                | blood_group | email                   |
++------------+-------------+------------+--------+----------------+------------------------+-------------+-------------------------+
+|         24 | Sneha Patil | 2003-03-15 | Female | 9876543210     | Shivaji Park, Kolhapur | A+          | sneha.patil@example.com |
++------------+-------------+------------+--------+----------------+------------------------+-------------+-------------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM rooms WHERE status = 'Available' OR room_type = 'Semi-Private';
++---------+--------------+-----------+------------+
+| room_id | room_type    | status    | patient_id |
++---------+--------------+-----------+------------+
+|       1 | General Ward | Available |       NULL |
+|     102 | General Ward | Available |       NULL |
+|     104 | Private Room | Available |       NULL |
+|     105 | Semi-Private | Occupied  |         23 |
+|     106 | Deluxe Room  | Available |       NULL |
++---------+--------------+-----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM doctors WHERE name LIKE 'Dr. A%';
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization | contact_number | email                    | department_id |
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+|       102 | Dr. Anjali Desai | Neurology      | 9000034567     | anjali.desai@example.com |             2 |
+|       105 | Dr. Arjun Verma  | Radiology      | 9000067890     | arjun.verma@example.com  |             2 |
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+2 rows in set (0.02 sec)
+
+mysql> SELECT * FROM patients WHERE email LIKE '%@gmail.com';
++------------+-------------+------------+--------+----------------+---------------------------------+-------------+-----------------+
+| patient_id | name        | dob        | gender | contact_number | address                         | blood_group | email           |
++------------+-------------+------------+--------+----------------+---------------------------------+-------------+-----------------+
+|         21 | Ravi Shinde | 2005-10-05 | Female | 9881653452     | Rajarampuri, 5th lane, Kolhapur | O+          | radha@gmail.com |
++------------+-------------+------------+--------+----------------+---------------------------------+-------------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM patients WHERE dob BETWEEN '2000-01-01' AND '2005-12-31';
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+| patient_id | name          | dob        | gender | contact_number | address                         | blood_group | email                     |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+|         21 | Ravi Shinde   | 2005-10-05 | Female | 9881653452     | Rajarampuri, 5th lane, Kolhapur | O+          | radha@gmail.com           |
+|         23 | Krishna Rane  | 2005-10-25 | male   | 9101653452     | rampuri, 5th lane, Solapur      | B+          | Null                      |
+|         24 | Sneha Patil   | 2003-03-15 | Female | 9876543210     | Shivaji Park, Kolhapur          | A+          | sneha.patil@example.com   |
+|         26 | Priya Jadhav  | 2001-12-09 | Female | 9898989898     | Mahalaxmi Nagar, Kolhapur       | AB+         | priya.jadhav@example.com  |
+|         27 | Rahul Pawar   | 2000-05-30 | Male   | 9753108642     | Gandhi Chowk, Kolhapur          | O-          | rahul.pawar@example.com   |
+|         28 | Neha Kulkarni | 2002-09-17 | Female | 9966332211     | Kasaba Bawda, Kolhapur          | A-          | neha.kulkarni@example.com |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+6 rows in set (0.02 sec)
+
+mysql> SELECT * FROM doctors WHERE doctor_id BETWEEN 101 AND 105;
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization | contact_number | email                    | department_id |
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+|       101 | Dr. Rohit Sharma | Cardiology     | 9000023456     | rohit.sharma@example.com |             1 |
+|       102 | Dr. Anjali Desai | Neurology      | 9000034567     | anjali.desai@example.com |             2 |
+|       103 | Dr. Vikram Singh | Orthopedics    | 9000045678     | vikram.singh@example.com |             3 |
+|       104 | Dr. Kavita Nair  | Pediatrics     | 9000056789     | kavita.nair@example.com  |             1 |
+|       105 | Dr. Arjun Verma  | Radiology      | 9000067890     | arjun.verma@example.com  |             2 |
++-----------+------------------+----------------+----------------+--------------------------+---------------+
+5 rows in set (0.02 sec)
+
+mysql> SELECT * FROM doctors ORDER BY name ASC;
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization   | contact_number | email                    | department_id |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+|       102 | Dr. Anjali Desai | Neurology        | 9000034567     | anjali.desai@example.com |             2 |
+|       105 | Dr. Arjun Verma  | Radiology        | 9000067890     | arjun.verma@example.com  |             2 |
+|       104 | Dr. Kavita Nair  | Pediatrics       | 9000056789     | kavita.nair@example.com  |             1 |
+|       100 | Dr. Meera Joshi  | General Medicine | 9000012345     | meera.joshi@example.com  |             1 |
+|       101 | Dr. Rohit Sharma | Cardiology       | 9000023456     | rohit.sharma@example.com |             1 |
+|       103 | Dr. Vikram Singh | Orthopedics      | 9000045678     | vikram.singh@example.com |             3 |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+6 rows in set (0.02 sec)
+
+mysql> SELECT * FROM patients ORDER BY dob DESC;
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+| patient_id | name          | dob        | gender | contact_number | address                         | blood_group | email                     |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+|         23 | Krishna Rane  | 2005-10-25 | male   | 9101653452     | rampuri, 5th lane, Solapur      | B+          | Null                      |
+|         21 | Ravi Shinde   | 2005-10-05 | Female | 9881653452     | Rajarampuri, 5th lane, Kolhapur | O+          | radha@gmail.com           |
+|         24 | Sneha Patil   | 2003-03-15 | Female | 9876543210     | Shivaji Park, Kolhapur          | A+          | sneha.patil@example.com   |
+|         28 | Neha Kulkarni | 2002-09-17 | Female | 9966332211     | Kasaba Bawda, Kolhapur          | A-          | neha.kulkarni@example.com |
+|         26 | Priya Jadhav  | 2001-12-09 | Female | 9898989898     | Mahalaxmi Nagar, Kolhapur       | AB+         | priya.jadhav@example.com  |
+|         27 | Rahul Pawar   | 2000-05-30 | Male   | 9753108642     | Gandhi Chowk, Kolhapur          | O-          | rahul.pawar@example.com   |
+|         25 | Amit Deshmukh | 1999-07-22 | Male   | 9822334455     | Tarabai Road, Kolhapur          | B+          | amit.deshmukh@example.com |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+7 rows in set (0.02 sec)
+
+mysql> SELECT * FROM departments ORDER BY name;
++---------------+-------------+---------------------------+
+| department_id | name        | location                  |
++---------------+-------------+---------------------------+
+|             1 | Cardiology  | Building A - 2nd Floor    |
+|             2 | Cardiology  | Building A - 2nd Floor    |
+|             3 | Neurology   | Building B - 3rd Floor    |
+|             4 | Orthopedics | Building C - 1st Floor    |
+|             5 | Pediatrics  | Building A - Ground Floor |
+|             6 | Radiology   | Building D - Basement     |
++---------------+-------------+---------------------------+
+6 rows in set (0.02 sec)
+
+mysql> SELECT * FROM rooms ORDER BY status ASC, room_type ASC;
++---------+--------------+-----------+------------+
+| room_id | room_type    | status    | patient_id |
++---------+--------------+-----------+------------+
+|     106 | Deluxe Room  | Available |       NULL |
+|       1 | General Ward | Available |       NULL |
+|     102 | General Ward | Available |       NULL |
+|     104 | Private Room | Available |       NULL |
+|     101 | ICU          | Occupied  |         21 |
+|     103 | ICU          | Occupied  |         26 |
+|     105 | Semi-Private | Occupied  |         23 |
++---------+--------------+-----------+------------+
+7 rows in set (0.02 sec)
+
+mysql> SELECT * FROM doctors ORDER BY department_id, name;
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization   | contact_number | email                    | department_id |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+|       104 | Dr. Kavita Nair  | Pediatrics       | 9000056789     | kavita.nair@example.com  |             1 |
+|       100 | Dr. Meera Joshi  | General Medicine | 9000012345     | meera.joshi@example.com  |             1 |
+|       101 | Dr. Rohit Sharma | Cardiology       | 9000023456     | rohit.sharma@example.com |             1 |
+|       102 | Dr. Anjali Desai | Neurology        | 9000034567     | anjali.desai@example.com |             2 |
+|       105 | Dr. Arjun Verma  | Radiology        | 9000067890     | arjun.verma@example.com  |             2 |
+|       103 | Dr. Vikram Singh | Orthopedics      | 9000045678     | vikram.singh@example.com |             3 |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT name, contact_number FROM patients ORDER BY name DESC;
++---------------+----------------+
+| name          | contact_number |
++---------------+----------------+
+| Sneha Patil   | 9876543210     |
+| Ravi Shinde   | 9881653452     |
+| Rahul Pawar   | 9753108642     |
+| Priya Jadhav  | 9898989898     |
+| Neha Kulkarni | 9966332211     |
+| Krishna Rane  | 9101653452     |
+| Amit Deshmukh | 9822334455     |
++---------------+----------------+
+7 rows in set (0.00 sec)
+
+mysql>
