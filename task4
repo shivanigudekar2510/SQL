@@ -1,0 +1,133 @@
+mysql> use hospital;
+Database changed
+mysql> SELECT COUNT(*) AS total_doctors FROM doctors;
++---------------+
+| total_doctors |
++---------------+
+|             6 |
++---------------+
+1 row in set (0.27 sec)
+
+mysql> SELECT COUNT(patient_id) AS patients_in_rooms FROM rooms WHERE patient_id IS NOT NULL;
++-------------------+
+| patients_in_rooms |
++-------------------+
+|                 3 |
++-------------------+
+1 row in set (0.05 sec)
+
+mysql> SELECT MAX(doctor_id) AS highest_doctor_id FROM doctors;
++-------------------+
+| highest_doctor_id |
++-------------------+
+|               105 |
++-------------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT MIN(patient_id) AS lowest_patient_id FROM patients;
++-------------------+
+| lowest_patient_id |
++-------------------+
+|                21 |
++-------------------+
+1 row in set (0.09 sec)
+
+mysql> SELECT AVG(doctor_id) AS average_doctor_id FROM doctors;
++-------------------+
+| average_doctor_id |
++-------------------+
+|          102.5000 |
++-------------------+
+1 row in set (0.02 sec)
+
+mysql> SELECT COUNT(room_id) AS total_rooms FROM rooms;
++-------------+
+| total_rooms |
++-------------+
+|           7 |
++-------------+
+1 row in set (0.02 sec)
+
+mysql> SELECT department_id, COUNT(*) AS total_doctors
+    -> FROM doctors
+    -> GROUP BY department_id;
++---------------+---------------+
+| department_id | total_doctors |
++---------------+---------------+
+|             1 |             3 |
+|             2 |             2 |
+|             3 |             1 |
++---------------+---------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT gender, COUNT(*) AS total_patients
+    -> FROM patients
+    -> GROUP BY gender;
++--------+----------------+
+| gender | total_patients |
++--------+----------------+
+| Female |              4 |
+| male   |              3 |
++--------+----------------+
+2 rows in set (0.03 sec)
+
+mysql> SELECT room_type, COUNT(*) AS total_rooms
+    -> FROM rooms
+    -> GROUP BY room_type;
++--------------+-------------+
+| room_type    | total_rooms |
++--------------+-------------+
+| General Ward |           2 |
+| ICU          |           2 |
+| Private Room |           1 |
+| Semi-Private |           1 |
+| Deluxe Room  |           1 |
++--------------+-------------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT blood_group, COUNT(*) AS total_patients
+    -> FROM patients
+    -> GROUP BY blood_group;
++-------------+----------------+
+| blood_group | total_patients |
++-------------+----------------+
+| O+          |              1 |
+| B+          |              2 |
+| A+          |              1 |
+| AB+         |              1 |
+| O-          |              1 |
+| A-          |              1 |
++-------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT room_type, COUNT(*) AS available_rooms
+    -> FROM rooms
+    -> WHERE status = 'Available'
+    -> GROUP BY room_type
+    -> HAVING COUNT(*) > 1;
++--------------+-----------------+
+| room_type    | available_rooms |
++--------------+-----------------+
+| General Ward |               2 |
++--------------+-----------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT blood_group, COUNT(*) AS total_patients
+    -> FROM patients
+    -> GROUP BY blood_group
+    -> HAVING COUNT(*) > 2;
+Empty set (0.00 sec)
+
+mysql> SELECT gender, COUNT(*) AS total_patients
+    -> FROM patients
+    -> GROUP BY gender
+    -> HAVING COUNT(*) < 5;
++--------+----------------+
+| gender | total_patients |
++--------+----------------+
+| Female |              4 |
+| male   |              3 |
++--------+----------------+
+2 rows in set (0.00 sec)
+
+mysql>
