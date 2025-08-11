@@ -1,0 +1,167 @@
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| agricom            |
+| airline            |
+| cricket            |
+| hospital           |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+8 rows in set (0.21 sec)
+
+mysql> use hospital;
+Database changed
+mysql> show tables;
++--------------------+
+| Tables_in_hospital |
++--------------------+
+| appointments       |
+| bills              |
+| departments        |
+| doctors            |
+| medical_records    |
+| patients           |
+| prescriptions      |
+| rooms              |
++--------------------+
+8 rows in set (0.04 sec)
+
+mysql> select *from dapartments;
+ERROR 1146 (42S02): Table 'hospital.dapartments' doesn't exist
+mysql> select *from departments;
++---------------+-------------+---------------------------+
+| department_id | name        | location                  |
++---------------+-------------+---------------------------+
+|             1 | Cardiology  | Building A - 2nd Floor    |
+|             2 | Cardiology  | Building A - 2nd Floor    |
+|             3 | Neurology   | Building B - 3rd Floor    |
+|             4 | Orthopedics | Building C - 1st Floor    |
+|             5 | Pediatrics  | Building A - Ground Floor |
+|             6 | Radiology   | Building D - Basement     |
++---------------+-------------+---------------------------+
+6 rows in set (0.10 sec)
+
+mysql> select *from doctors;
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+| doctor_id | name             | specialization   | contact_number | email                    | department_id |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+|       100 | Dr. Meera Joshi  | General Medicine | 9000012345     | meera.joshi@example.com  |             1 |
+|       101 | Dr. Rohit Sharma | Cardiology       | 9000023456     | rohit.sharma@example.com |             1 |
+|       102 | Dr. Anjali Desai | Neurology        | 9000034567     | anjali.desai@example.com |             2 |
+|       103 | Dr. Vikram Singh | Orthopedics      | 9000045678     | vikram.singh@example.com |             3 |
+|       104 | Dr. Kavita Nair  | Pediatrics       | 9000056789     | kavita.nair@example.com  |             1 |
+|       105 | Dr. Arjun Verma  | Radiology        | 9000067890     | arjun.verma@example.com  |             2 |
++-----------+------------------+------------------+----------------+--------------------------+---------------+
+6 rows in set (0.04 sec)
+
+mysql> select *from patients;
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+| patient_id | name          | dob        | gender | contact_number | address                         | blood_group | email                     |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+|         21 | Ravi Shinde   | 2005-10-05 | Female | 9881653452     | Rajarampuri, 5th lane, Kolhapur | O+          | radha@gmail.com           |
+|         23 | Krishna Rane  | 2005-10-25 | male   | 9101653452     | rampuri, 5th lane, Solapur      | B+          | Null                      |
+|         24 | Sneha Patil   | 2003-03-15 | Female | 9876543210     | Shivaji Park, Kolhapur          | A+          | sneha.patil@example.com   |
+|         25 | Amit Deshmukh | 1999-07-22 | Male   | 9822334455     | Tarabai Road, Kolhapur          | B+          | amit.deshmukh@example.com |
+|         26 | Priya Jadhav  | 2001-12-09 | Female | 9898989898     | Mahalaxmi Nagar, Kolhapur       | AB+         | priya.jadhav@example.com  |
+|         27 | Rahul Pawar   | 2000-05-30 | Male   | 9753108642     | Gandhi Chowk, Kolhapur          | O-          | rahul.pawar@example.com   |
+|         28 | Neha Kulkarni | 2002-09-17 | Female | 9966332211     | Kasaba Bawda, Kolhapur          | A-          | neha.kulkarni@example.com |
++------------+---------------+------------+--------+----------------+---------------------------------+-------------+---------------------------+
+7 rows in set (0.04 sec)
+
+mysql> select *from rooms;
++---------+--------------+-----------+------------+
+| room_id | room_type    | status    | patient_id |
++---------+--------------+-----------+------------+
+|       1 | General Ward | Available |       NULL |
+|     101 | ICU          | Occupied  |         21 |
+|     102 | General Ward | Available |       NULL |
+|     103 | ICU          | Occupied  |         26 |
+|     104 | Private Room | Available |       NULL |
+|     105 | Semi-Private | Occupied  |         23 |
+|     106 | Deluxe Room  | Available |       NULL |
++---------+--------------+-----------+------------+
+7 rows in set (0.03 sec)
+
+mysql> SELECT *FROM doctors d
+    -> INNER JOIN departments dept
+    ->     ON d.department_id = dept.department_id;
++-----------+------------------+------------------+----------------+--------------------------+---------------+---------------+------------+------------------------+
+| doctor_id | name             | specialization   | contact_number | email                    | department_id | department_id | name       | location               |
++-----------+------------------+------------------+----------------+--------------------------+---------------+---------------+------------+------------------------+
+|       100 | Dr. Meera Joshi  | General Medicine | 9000012345     | meera.joshi@example.com  |             1 |             1 | Cardiology | Building A - 2nd Floor |
+|       101 | Dr. Rohit Sharma | Cardiology       | 9000023456     | rohit.sharma@example.com |             1 |             1 | Cardiology | Building A - 2nd Floor |
+|       102 | Dr. Anjali Desai | Neurology        | 9000034567     | anjali.desai@example.com |             2 |             2 | Cardiology | Building A - 2nd Floor |
+|       103 | Dr. Vikram Singh | Orthopedics      | 9000045678     | vikram.singh@example.com |             3 |             3 | Neurology  | Building B - 3rd Floor |
+|       104 | Dr. Kavita Nair  | Pediatrics       | 9000056789     | kavita.nair@example.com  |             1 |             1 | Cardiology | Building A - 2nd Floor |
+|       105 | Dr. Arjun Verma  | Radiology        | 9000067890     | arjun.verma@example.com  |             2 |             2 | Cardiology | Building A - 2nd Floor |
++-----------+------------------+------------------+----------------+--------------------------+---------------+---------------+------------+------------------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT d.doctor_id, d.name
+    -> FROM doctors d
+    -> LEFT JOIN departments dept
+    ->     ON d.department_id = dept.department_id;
++-----------+------------------+
+| doctor_id | name             |
++-----------+------------------+
+|       100 | Dr. Meera Joshi  |
+|       101 | Dr. Rohit Sharma |
+|       102 | Dr. Anjali Desai |
+|       103 | Dr. Vikram Singh |
+|       104 | Dr. Kavita Nair  |
+|       105 | Dr. Arjun Verma  |
++-----------+------------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT d.doctor_id, d.name, dept.name
+    -> FROM doctors d
+    -> RIGHT JOIN departments dept
+    ->     ON d.department_id = dept.department_id;
++-----------+------------------+-------------+
+| doctor_id | name             | name        |
++-----------+------------------+-------------+
+|       104 | Dr. Kavita Nair  | Cardiology  |
+|       101 | Dr. Rohit Sharma | Cardiology  |
+|       100 | Dr. Meera Joshi  | Cardiology  |
+|       105 | Dr. Arjun Verma  | Cardiology  |
+|       102 | Dr. Anjali Desai | Cardiology  |
+|       103 | Dr. Vikram Singh | Neurology   |
+|      NULL | NULL             | Orthopedics |
+|      NULL | NULL             | Pediatrics  |
+|      NULL | NULL             | Radiology   |
++-----------+------------------+-------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT d.doctor_id, d.name, dept.name
+    -> FROM doctors d
+    -> LEFT JOIN departments dept
+    ->     ON d.department_id = dept.department_id
+    ->
+    -> UNION
+    ->
+    -> SELECT d.doctor_id, d.name, dept.name
+    -> FROM doctors d
+    -> RIGHT JOIN departments dept
+    ->     ON d.department_id = dept.department_id;
++-----------+------------------+-------------+
+| doctor_id | name             | name        |
++-----------+------------------+-------------+
+|       100 | Dr. Meera Joshi  | Cardiology  |
+|       101 | Dr. Rohit Sharma | Cardiology  |
+|       102 | Dr. Anjali Desai | Cardiology  |
+|       103 | Dr. Vikram Singh | Neurology   |
+|       104 | Dr. Kavita Nair  | Cardiology  |
+|       105 | Dr. Arjun Verma  | Cardiology  |
+|      NULL | NULL             | Orthopedics |
+|      NULL | NULL             | Pediatrics  |
+|      NULL | NULL             | Radiology   |
++-----------+------------------+-------------+
+9 rows in set (0.02 sec)
+
+mysql>
