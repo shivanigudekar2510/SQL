@@ -1,0 +1,120 @@
+mysql> SELECT p.patient_id, p.name, b.amount
+    -> FROM patients p
+    -> JOIN bills b ON p.patient_id = b.patient_id
+    -> WHERE b.amount = (
+    ->     SELECT MAX(amount)
+    ->     FROM bills
+    -> );
++------------+--------------+---------+
+| patient_id | name         | amount  |
++------------+--------------+---------+
+|         26 | Priya Jadhav | 4800.00 |
+|         26 | Priya Jadhav | 4800.00 |
++------------+--------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT p.patient_id, p.name, b.amount
+    -> FROM patients p
+    -> JOIN bills b ON p.patient_id = b.patient_id
+    -> WHERE b.amount > (
+    ->     SELECT AVG(b2.amount)
+    ->     FROM bills b2
+    ->     WHERE b2.patient_id = p.patient_id
+    -> );
+Empty set (0.03 sec)
+
+mysql> SELECT doctor_id, name, specialization
+    -> FROM doctors
+    -> WHERE department_id = (
+    ->     SELECT MIN(department_id)
+    ->     FROM departments
+    -> );
++-----------+------------------+------------------+
+| doctor_id | name             | specialization   |
++-----------+------------------+------------------+
+|       100 | Dr. Meera Joshi  | General Medicine |
+|       101 | Dr. Rohit Sharma | Cardiology       |
+|       104 | Dr. Kavita Nair  | Pediatrics       |
++-----------+------------------+------------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT p.patient_id, p.name, p.gender
+    -> FROM patients p
+    -> WHERE EXISTS (
+    ->     SELECT 1
+    ->     FROM rooms r
+    ->     WHERE r.patient_id = p.patient_id
+    ->       AND r.status = 'Occupied'
+    -> );
++------------+--------------+--------+
+| patient_id | name         | gender |
++------------+--------------+--------+
+|         21 | Ravi Shinde  | Female |
+|         26 | Priya Jadhav | Female |
+|         23 | Krishna Rane | male   |
++------------+--------------+--------+
+3 rows in set (0.03 sec)
+
+mysql> SELECT d.doctor_id, d.name, d.specialization
+    -> FROM doctors d
+    -> WHERE EXISTS (
+    ->     SELECT 1
+    ->     FROM appointments a
+    ->     WHERE a.doctor_id = d.doctor_id
+    -> );
++-----------+------------------+----------------+
+| doctor_id | name             | specialization |
++-----------+------------------+----------------+
+|       101 | Dr. Rohit Sharma | Cardiology     |
+|       102 | Dr. Anjali Desai | Neurology      |
+|       103 | Dr. Vikram Singh | Orthopedics    |
++-----------+------------------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT name, patient_id
+    -> FROM patients
+    -> WHERE patient_id IN (
+    ->     SELECT patient_id
+    ->     FROM appointments
+    -> );
++--------------+------------+
+| name         | patient_id |
++--------------+------------+
+| Ravi Shinde  |         21 |
+| Krishna Rane |         23 |
+| Priya Jadhav |         26 |
++--------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT doctor_id, name, specialization
+    -> FROM doctors d
+    -> WHERE EXISTS (
+    ->     SELECT 1
+    ->     FROM appointments a
+    ->     WHERE a.doctor_id = d.doctor_id
+    -> );
++-----------+------------------+----------------+
+| doctor_id | name             | specialization |
++-----------+------------------+----------------+
+|       101 | Dr. Rohit Sharma | Cardiology     |
+|       102 | Dr. Anjali Desai | Neurology      |
+|       103 | Dr. Vikram Singh | Orthopedics    |
++-----------+------------------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT name, patient_id
+    -> FROM patients
+    -> WHERE patient_id = (
+    ->     SELECT patient_id
+    ->     FROM bills
+    ->     ORDER BY amount DESC
+    ->     LIMIT 1
+    -> );
++--------------+------------+
+| name         | patient_id |
++--------------+------------+
+| Priya Jadhav |         26 |
++--------------+------------+
+1 row in set (0.00 sec)
+
+mysql>
