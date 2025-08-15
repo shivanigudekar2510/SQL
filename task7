@@ -1,0 +1,90 @@
+Example: Create a view showing upcoming appointments with patient & doctor details
+mysql> CREATE VIEW upcoming_appointments AS
+    -> SELECT
+    ->     a.appointment_id,
+    ->     p.name AS patient_name,
+    ->     p.gender,
+    ->     d.name AS doctor_name,
+    ->     d.specialization,
+    ->     a.appointment_date,
+    ->     a.reason,
+    ->     a.status
+    -> FROM appointments a
+    -> JOIN patients p ON a.patient_id = p.patient_id
+    -> JOIN doctors d ON a.doctor_id = d.doctor_id
+    -> WHERE a.status = 'Scheduled'
+    -> ORDER BY a.appointment_date ASC;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select *from upcoming_appointments;
++----------------+--------------+--------+------------------+----------------+---------------------+-------------------------------+-----------+
+| appointment_id | patient_name | gender | doctor_name      | specialization | appointment_date    | reason                        | status    |
++----------------+--------------+--------+------------------+----------------+---------------------+-------------------------------+-----------+
+|              1 | Ravi Shinde  | Female | Dr. Rohit Sharma | Cardiology     | 2025-08-20 10:30:00 | Chest pain and breathlessness | Scheduled |
+|              4 | Ravi Shinde  | Female | Dr. Rohit Sharma | Cardiology     | 2025-08-20 10:30:00 | Chest pain and breathlessness | Scheduled |
+|              2 | Priya Jadhav | Female | Dr. Vikram Singh | Orthopedics    | 2025-08-21 14:00:00 | Knee pain after injury        | Scheduled |
+|              5 | Priya Jadhav | Female | Dr. Vikram Singh | Orthopedics    | 2025-08-21 14:00:00 | Knee pain after injury        | Scheduled |
+|              3 | Krishna Rane | male   | Dr. Anjali Desai | Neurology      | 2025-08-22 09:00:00 | Frequent headaches            | Scheduled |
+|              6 | Krishna Rane | male   | Dr. Anjali Desai | Neurology      | 2025-08-22 09:00:00 | Frequent headaches            | Scheduled |
++----------------+--------------+--------+------------------+----------------+---------------------+-------------------------------+-----------+
+6 rows in set (0.00 sec)
+Example: View showing patient, room type, and total bill amount
+CREATE VIEW patient_room_bills AS
+SELECT 
+    p.patient_id,
+    p.name AS patient_name,
+    r.room_type,
+    r.status AS room_status,
+    COALESCE(SUM(b.amount), 0) AS total_bill,
+    COUNT(b.bill_id) AS total_bills
+FROM patients p
+LEFT JOIN rooms r ON p.patient_id = r.patient_id
+LEFT JOIN bills b ON p.patient_id = b.patient_id
+GROUP BY p.patient_id, p.name, r.room_type, r.status
+ORDER BY total_bill DESC;
+mysql> select *from patient_room_bills;
++------------+---------------+--------------+-------------+------------+-------------+
+| patient_id | patient_name  | room_type    | room_status | total_bill | total_bills |
++------------+---------------+--------------+-------------+------------+-------------+
+|         26 | Priya Jadhav  | ICU          | Occupied    |    9600.00 |           2 |
+|         21 | Ravi Shinde   | ICU          | Occupied    |    5000.00 |           2 |
+|         23 | Krishna Rane  | Semi-Private | Occupied    |    3000.00 |           2 |
+|         24 | Sneha Patil   | NULL         | NULL        |       0.00 |           0 |
+|         25 | Amit Deshmukh | NULL         | NULL        |       0.00 |           0 |
+|         27 | Rahul Pawar   | NULL         | NULL        |       0.00 |           0 |
+|         28 | Neha Kulkarni | NULL         | NULL        |       0.00 |           0 |
++------------+---------------+--------------+-------------+------------+-------------+
+7 rows in set (0.02 sec)
+mysql> CREATE VIEW doctor_schedule AS
+    -> SELECT
+    ->     d.doctor_id,
+    ->     d.name AS doctor_name,
+    ->     a.appointment_date,
+    ->     p.name AS patient_name,
+    ->     a.reason,
+    ->     a.status
+    -> FROM doctors d
+    -> JOIN appointments a ON d.doctor_id = a.doctor_id
+    -> JOIN patients p ON a.patient_id = p.patient_id
+    -> ORDER BY a.appointment_date;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE VIEW billing_summary AS
+    -> SELECT
+    ->     p.patient_id,
+    ->     p.name AS patient_name,
+    ->     b.amount,
+    ->     b.billing_date,
+    ->     b.status
+    -> FROM patients p
+    -> JOIN bills b ON p.patient_id = b.patient_id;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM doctor_schedule WHERE doctor_id = 101;
++-----------+------------------+---------------------+--------------+-------------------------------+-----------+
+| doctor_id | doctor_name      | appointment_date    | patient_name | reason                        | status    |
++-----------+------------------+---------------------+--------------+-------------------------------+-----------+
+|       101 | Dr. Rohit Sharma | 2025-08-20 10:30:00 | Ravi Shinde  | Chest pain and breathlessness | Scheduled |
+|       101 | Dr. Rohit Sharma | 2025-08-20 10:30:00 | Ravi Shinde  | Chest pain and breathlessness | Scheduled |
++-----------+------------------+---------------------+--------------+-------------------------------+-----------+
+2 rows in set (0.00 sec)
