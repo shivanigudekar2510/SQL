@@ -1,0 +1,178 @@
+Example: A procedure to insert a new appointment without typing the full INSERT query every time.
+mysql> DELIMITER $$
+mysql>
+mysql> CREATE PROCEDURE AddAppointment (
+    ->     IN p_patient_id INT,
+    ->     IN p_doctor_id INT,
+    ->     IN p_date DATETIME,
+    ->     IN p_reason TEXT,
+    ->     IN p_status VARCHAR(20)
+    -> )
+    -> BEGIN
+    ->     INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, status)
+    ->     VALUES (p_patient_id, p_doctor_id, p_date, p_reason, p_status);
+    -> END $$
+Query OK, 0 rows affected (0.04 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL AddAppointment(21, 101, '2025-08-25 10:00:00', 'Regular Checkup', 'Scheduled');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> DELIMITER $$
+mysql>
+mysql> CREATE FUNCTION GetTotalBill(p_patient_id INT)
+    -> RETURNS DECIMAL(10,2)
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE total DECIMAL(10,2);
+    ->     SELECT COALESCE(SUM(amount), 0)
+    ->     INTO total
+    ->     FROM bills
+    ->     WHERE patient_id = p_patient_id;
+    ->     RETURN total;
+    -> END $$
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> SELECT name, GetTotalBill(patient_id) AS total_bill
+    -> FROM patients;
++---------------+------------+
+| name          | total_bill |
++---------------+------------+
+| Ravi Shinde   |    5000.00 |
+| Krishna Rane  |    3000.00 |
+| Sneha Patil   |       0.00 |
+| Amit Deshmukh |       0.00 |
+| Priya Jadhav  |    9600.00 |
+| Rahul Pawar   |       0.00 |
+| Neha Kulkarni |       0.00 |
++---------------+------------+
+7 rows in set (0.01 sec)
+
+mysql> DELIMITER $$
+mysql>
+mysql> CREATE PROCEDURE MarkBillPaid (
+    ->     IN p_bill_id INT
+    -> )
+    -> BEGIN
+    ->     UPDATE bills
+    ->     SET status = 'Paid'
+    ->     WHERE bill_id = p_bill_id;
+    -> END $$
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL MarkBillPaid(2);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER $$
+mysql>
+mysql> CREATE FUNCTION GetAge(p_dob DATE)
+    -> RETURNS INT
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE age INT;
+    ->     SET age = TIMESTAMPDIFF(YEAR, p_dob, CURDATE());
+    ->     RETURN age;
+    -> END $$
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> SELECT name, dob, GetAge(dob) AS age
+    -> FROM patients;
++---------------+------------+------+
+| name          | dob        | age  |
++---------------+------------+------+
+| Ravi Shinde   | 2005-10-05 |   19 |
+| Krishna Rane  | 2005-10-25 |   19 |
+| Sneha Patil   | 2003-03-15 |   22 |
+| Amit Deshmukh | 1999-07-22 |   26 |
+| Priya Jadhav  | 2001-12-09 |   23 |
+| Rahul Pawar   | 2000-05-30 |   25 |
+| Neha Kulkarni | 2002-09-17 |   22 |
++---------------+------------+------+
+7 rows in set (0.02 sec)
+
+mysql> DELIMITER $$
+mysql>
+mysql> CREATE PROCEDURE AssignRoomToPatient (
+    ->     IN p_room_id INT,
+    ->     IN p_patient_id INT
+    -> )
+    -> BEGIN
+    ->     DECLARE v_status VARCHAR(20);
+    ->
+    ->     -- Get current room status
+    ->     SELECT status INTO v_status
+    ->     FROM rooms
+    ->     WHERE room_id = p_room_id;
+    ->
+    ->     -- Check availability
+    ->     IF v_status = 'Available' THEN
+    ->         UPDATE rooms
+    ->         SET status = 'Occupied',
+    ->             patient_id = p_patient_id
+    ->         WHERE room_id = p_room_id;
+    ->
+    ->         SELECT CONCAT('Room ', p_room_id, ' assigned to patient ', p_patient_id) AS message;
+    ->     ELSE
+    ->         SELECT CONCAT('Room ', p_room_id, ' is not available.') AS message;
+    ->     END IF;
+    -> END $$
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL AssignRoomToPatient(102, 24);
++---------------------------------+
+| message                         |
++---------------------------------+
+| Room 102 assigned to patient 24 |
++---------------------------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER $$
+mysql>
+mysql> CREATE FUNCTION IsHighBill(p_patient_id INT, p_amount_limit DECIMAL(10,2))
+    -> RETURNS VARCHAR(10)
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE total DECIMAL(10,2);
+    ->
+    ->     SELECT COALESCE(SUM(amount), 0)
+    ->     INTO total
+    ->     FROM bills
+    ->     WHERE patient_id = p_patient_id;
+    ->
+    ->     IF total > p_amount_limit THEN
+    ->         RETURN 'YES';
+    ->     ELSE
+    ->         RETURN 'NO';
+    ->     END IF;
+    -> END $$
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> SELECT name, IsHighBill(patient_id, 3000) AS high_bill
+    -> FROM patients;
++---------------+-----------+
+| name          | high_bill |
++---------------+-----------+
+| Ravi Shinde   | YES       |
+| Krishna Rane  | NO        |
+| Sneha Patil   | NO        |
+| Amit Deshmukh | NO        |
+| Priya Jadhav  | YES       |
+| Rahul Pawar   | NO        |
+| Neha Kulkarni | NO        |
++---------------+-----------+
+7 rows in set (0.00 sec)
+
+mysql>
